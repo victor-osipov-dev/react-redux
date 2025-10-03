@@ -1,12 +1,10 @@
 import { memo, useState } from "react";
+import { useAppDispatch, useAppSelector, type AppState } from "../../store";
 import {
-    createAppSeletor,
-    useAppDispatch,
-    useAppSelector,
-    type AppState,
+    SelectSortedUsers,
     type UserRemoveSelectedAction,
     type UserSelectedAction,
-} from "./store";
+} from "./users.slice";
 
 type UserId = string;
 type User = {
@@ -15,21 +13,10 @@ type User = {
     description: string;
 };
 
-const selectSortedUsers = createAppSeletor(
-    (state: AppState) => state.users.ids,
-    (state: AppState) => state.users.entities,
-    (_: AppState, sort: "asc" | "desc") => sort,
-    (ids, entities, sort) =>
-        ids
-            .map((id) => entities[id])
-            .sort((a, b) => {
-                if (sort === "asc") {
-                    return a.name.localeCompare(b.name);
-                } else {
-                    return b.name.localeCompare(a.name);
-                }
-            }),
-);
+const selectSortedUsers = SelectSortedUsers();
+const selectSortedUsers2 = SelectSortedUsers();
+
+console.log(selectSortedUsers === selectSortedUsers2);
 
 export function UsersList() {
     const [sortType, setSortType] = useState<"asc" | "desc">("asc");

@@ -1,11 +1,10 @@
+import { useAppDispatch, useAppSelector } from "../../store";
 import {
     selectCounter,
-    useAppDispatch,
-    useAppSelector,
     type CounterId,
-    type DecrementAction,
-    type IncrementAction,
-} from "./store";
+    decrementAction,
+    incrementAction
+} from "./counters.slice";
 
 export function Counters() {
     return (
@@ -28,10 +27,7 @@ export function Counter({ counterId }: { counterId: CounterId }) {
             counter {counterState?.counter}
             <button
                 onClick={() =>
-                    dispatch({
-                        type: "increment",
-                        payload: { counterId },
-                    } satisfies IncrementAction)
+                    dispatch(incrementAction({ counterId }))
                 }
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
@@ -39,10 +35,7 @@ export function Counter({ counterId }: { counterId: CounterId }) {
             </button>
             <button
                 onClick={() =>
-                    dispatch({
-                        type: "decrement",
-                        payload: { counterId },
-                    } satisfies DecrementAction)
+                    dispatch(decrementAction({ counterId }))
                 }
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
