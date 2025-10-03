@@ -1,10 +1,6 @@
 import { memo, useState } from "react";
 import { useAppDispatch, useAppSelector, type AppState } from "../../store";
-import {
-    SelectSortedUsers,
-    type UserRemoveSelectedAction,
-    type UserSelectedAction,
-} from "./users.slice";
+import { usersSlice } from "./users.slice";
 
 type UserId = string;
 type User = {
@@ -13,19 +9,18 @@ type User = {
     description: string;
 };
 
-const selectSortedUsers = SelectSortedUsers();
-const selectSortedUsers2 = SelectSortedUsers();
+// const selectSortedUsers = SelectSortedUsers();
 
-console.log(selectSortedUsers === selectSortedUsers2);
+// console.log(selectSortedUsers === selectSortedUsers2);
 
 export function UsersList() {
     const [sortType, setSortType] = useState<"asc" | "desc">("asc");
 
-    const sortedUsers = useAppSelector((state: AppState) =>
-        selectSortedUsers(state, sortType),
+    const sortedUsers = useAppSelector((state) =>
+        usersSlice.selectors.selectSortedUsers(state, sortType),
     );
     const selectedUserId = useAppSelector(
-        (state) => state.users.selectedUserId,
+        usersSlice.selectors.selectSelectedUserId,
     );
 
     return (
@@ -64,10 +59,7 @@ const UserListItem = memo(({ userId }: { userId: UserId }) => {
     const dispatch = useAppDispatch();
 
     const handleUserClick = () => {
-        dispatch({
-            type: "setUserSelected",
-            payload: { userId: user.id },
-        } satisfies UserSelectedAction);
+        dispatch(usersSlice.actions.selected({ userId }));
     };
 
     return (
@@ -81,9 +73,7 @@ function SelectedUser({ userId }: { userId: UserId }) {
     const user = useAppSelector((state) => state.users.entities[userId]);
     const dispatch = useAppDispatch();
     const handleBackButtonClick = () => {
-        dispatch({
-            type: "userRemoveSelected",
-        } satisfies UserRemoveSelectedAction);
+        dispatch(dispatch(usersSlice.actions.selectRemove()));
     };
 
     return (

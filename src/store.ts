@@ -4,38 +4,19 @@ import {
     createSelector,
 } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import {
-    initialUsersList,
-    usersReducer,
-    type UserRemoveSelectedAction,
-    type UserSelectedAction,
-    type UsersStoredAction,
-} from "./modules/users/users.slice";
-import {
-    countersReducer,
-} from "./modules/counters/counters.slice";
-
-export type Action =
-    | UserSelectedAction
-    | UserRemoveSelectedAction
-    | UsersStoredAction;
-
-const reducer = combineReducers({
-    users: usersReducer,
-    counters: countersReducer,
-});
+import { initialUsersList, usersSlice } from "./modules/users/users.slice";
+import { countersReducer } from "./modules/counters/counters.slice";
 
 export const store = configureStore({
-    reducer: reducer,
+    reducer: {
+        counters: countersReducer,
+        [usersSlice.name]: usersSlice.reducer,
+    },
 });
 
-store.dispatch({
-    type: "usersStored",
-    payload: { users: initialUsersList },
-} satisfies UsersStoredAction);
+store.dispatch(usersSlice.actions.stored({ users: initialUsersList }));
 
 export type AppState = ReturnType<typeof store.getState>;
-export type AppUsersState = Pick<AppState, "users">;
 export type AppCountersState = Pick<AppState, "counters">;
 export type AppDispatch = typeof store.dispatch;
 

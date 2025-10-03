@@ -2,6 +2,8 @@ import {
     combineReducers,
     configureStore,
     createSelector,
+    createSlice,
+    type PayloadAction,
 } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { createAppSeletor, store, type AppUsersState } from "../../store";
@@ -29,68 +31,10 @@ export type UsersState = {
     selectedUserId: UserId | undefined;
 };
 
-export type UserSelectedAction = {
-    type: "setUserSelected";
-    payload: {
-        userId: UserId;
-    };
-};
-
-export type UserRemoveSelectedAction = {
-    type: "userRemoveSelected";
-};
-
-export type UsersStoredAction = {
-    type: "usersStored";
-    payload: {
-        users: User[];
-    };
-};
-
-type Action = UserSelectedAction | UserRemoveSelectedAction | UsersStoredAction;
-
 const initialUsersState: UsersState = {
     entities: {},
     ids: [],
     selectedUserId: undefined,
-};
-
-export const usersReducer = (
-    state = initialUsersState,
-    action: Action,
-): UsersState => {
-    switch (action.type) {
-        case "usersStored": {
-            const { users } = action.payload;
-            return {
-                ...state,
-                entities: users.reduce(
-                    (acc, user) => {
-                        acc[user.id] = user;
-                        return acc;
-                    },
-                    {} as Record<UserId, User>,
-                ),
-                ids: users.map((user) => user.id),
-            };
-        }
-
-        case "setUserSelected": {
-            const { userId } = action.payload;
-            return {
-                ...state,
-                selectedUserId: userId,
-            };
-        }
-        case "userRemoveSelected": {
-            return {
-                ...state,
-                selectedUserId: undefined,
-            };
-        }
-        default:
-            return state;
-    }
 };
 
 const createSelectSortedUsers = () =>
@@ -127,3 +71,46 @@ SelectSortedUsers.state = null;
 
 export const selectSelectedUserId = (state: AppUsersState) =>
     state.users.selectedUserId;
+
+export const usersSlice = createSlice({
+    name: "users",
+    initialState: initialUsersState,
+    selectors: {
+        selectSelectedUserId: (state) => state.selectedUserId,
+        selectSortedUsers: createAppSeletor(
+            (state: UsersState) => state.ids,
+            (state: UsersState) => state.entities,
+            (_: UsersState, sort: "asc" | "desc") => sort,
+            (ids, entities, sort) =>
+                ids
+                    .map((id) => entities[id])
+                    .sort((a, b) => {
+                        if (sort === "asc") {
+                            return a.name.localeCompare(b.name);
+                        } else {
+                            return b.name.localeCompare(a.name);
+                        }
+                    }),
+        ),
+    },
+    reducers: {
+        selected: (state, action: PayloadAction<{ userId: UserId }>) => {
+            state.selectedUserId = action.payload.userId;
+        },
+        selectRemove: (state) => {
+            state.selectedUserId = undefined;
+        },
+        stored: (state, action: PayloadAction<{ users: User[] }>) => {
+            const { users } = action.payload;
+
+            state.entities = users.reduce(
+                (acc, user) => {
+                    acc[user.id] = user;
+                    return acc;
+                },
+                {} as Record<UserId, User>,
+            );
+            state.ids = users.map((user) => user.id);
+        },
+    },
+});
