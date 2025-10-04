@@ -1,12 +1,8 @@
 import {
-    combineReducers,
-    configureStore,
     createSelector,
     createSlice,
     type PayloadAction,
 } from "@reduxjs/toolkit";
-import { useDispatch, useSelector, useStore } from "react-redux";
-import { createAppSeletor, store, type AppUsersState } from "../../store";
 
 type UserId = string;
 
@@ -37,47 +33,12 @@ const initialUsersState: UsersState = {
     selectedUserId: undefined,
 };
 
-const createSelectSortedUsers = () =>
-    createAppSeletor(
-        (state: AppUsersState) => state.users.ids,
-        (state: AppUsersState) => state.users.entities,
-        (_: AppUsersState, sort: "asc" | "desc") => sort,
-        (ids, entities, sort) =>
-            ids
-                .map((id) => entities[id])
-                .sort((a, b) => {
-                    if (sort === "asc") {
-                        return a.name.localeCompare(b.name);
-                    } else {
-                        return b.name.localeCompare(a.name);
-                    }
-                }),
-    );
-
-type ISelectSortedUsers<T = ReturnType<typeof createSelectSortedUsers>> = {
-    (): T;
-    state: T | null;
-};
-
-export const SelectSortedUsers: ISelectSortedUsers = () => {
-    if (SelectSortedUsers.state) {
-        return SelectSortedUsers.state;
-    }
-
-    SelectSortedUsers.state = createSelectSortedUsers();
-    return SelectSortedUsers.state;
-};
-SelectSortedUsers.state = null;
-
-export const selectSelectedUserId = (state: AppUsersState) =>
-    state.users.selectedUserId;
-
 export const usersSlice = createSlice({
     name: "users",
     initialState: initialUsersState,
     selectors: {
         selectSelectedUserId: (state) => state.selectedUserId,
-        selectSortedUsers: createAppSeletor(
+        selectSortedUsers: createSelector(
             (state: UsersState) => state.ids,
             (state: UsersState) => state.entities,
             (_: UsersState, sort: "asc" | "desc") => sort,
