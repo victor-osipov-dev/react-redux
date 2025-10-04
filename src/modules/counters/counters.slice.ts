@@ -25,7 +25,7 @@ export const countersReducer = createReducer(
             incrementAction,
             (state, { payload: { counterId } }) => {
                 if (!state[counterId]) {
-                    state[counterId] = initialCounterState;
+                    state[counterId] = structuredClone(initialCounterState);
                 }
 
                 state[counterId].counter++;
@@ -35,7 +35,7 @@ export const countersReducer = createReducer(
             decrementAction,
             (state, { payload: { counterId } }) => {
                 if (!state[counterId]) {
-                    state[counterId] = initialCounterState;
+                    state[counterId] = structuredClone(initialCounterState);
                 }
 
                 state[counterId].counter--;
