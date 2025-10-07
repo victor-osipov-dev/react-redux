@@ -1,6 +1,12 @@
-import { memo, useState } from "react";
-import { useAppDispatch, useAppSelector, type AppState } from "../../store";
+import { memo, useEffect, useState } from "react";
+import {
+    useAppDispatch,
+    useAppSelector,
+    useAppStore,
+    type AppState,
+} from "../../store";
 import { usersSlice } from "./users.slice";
+import { api } from "../../shared/api";
 
 type UserId = string;
 type User = {
@@ -9,12 +15,34 @@ type User = {
     description: string;
 };
 
-// const selectSortedUsers = SelectSortedUsers();
-
-// console.log(selectSortedUsers === selectSortedUsers2);
-
 export function UsersList() {
+    const dispatch = useAppDispatch();
+    const appStore = useAppStore();
     const [sortType, setSortType] = useState<"asc" | "desc">("asc");
+
+    const isPending = useAppSelector(
+        usersSlice.selectors.selectIfFetchUsersPending,
+    );
+
+    useEffect(() => {
+        const isIdle = usersSlice.selectors.selectIfFetchUsersIdle(
+            appStore.getState(),
+        );
+
+        if (!isIdle) {
+            return;
+        }
+
+        dispatch(usersSlice.actions.fetchUsersPending());
+
+        api.getUsers()
+            .then((users) => {
+                dispatch(usersSlice.actions.fetchUsersSuccess({ users }));
+            })
+            .catch((err) => {
+                dispatch(usersSlice.actions.fetchUsersFailed());
+            });
+    }, [dispatch, appStore]);
 
     const sortedUsers = useAppSelector((state) =>
         usersSlice.selectors.selectSortedUsers(state, sortType),
@@ -22,6 +50,10 @@ export function UsersList() {
     const selectedUserId = useAppSelector(
         usersSlice.selectors.selectSelectedUserId,
     );
+
+    if (isPending) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="flex flex-col items-center">
