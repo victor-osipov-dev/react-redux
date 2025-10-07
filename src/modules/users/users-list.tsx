@@ -3,10 +3,9 @@ import {
     useAppDispatch,
     useAppSelector,
     useAppStore,
-    type AppState,
 } from "../../store";
 import { usersSlice } from "./users.slice";
-import { api } from "../../shared/api";
+import { fetchUsers } from "./model/fetch-users";
 
 type UserId = string;
 type User = {
@@ -25,23 +24,7 @@ export function UsersList() {
     );
 
     useEffect(() => {
-        const isIdle = usersSlice.selectors.selectIfFetchUsersIdle(
-            appStore.getState(),
-        );
-
-        if (!isIdle) {
-            return;
-        }
-
-        dispatch(usersSlice.actions.fetchUsersPending());
-
-        api.getUsers()
-            .then((users) => {
-                dispatch(usersSlice.actions.fetchUsersSuccess({ users }));
-            })
-            .catch((err) => {
-                dispatch(usersSlice.actions.fetchUsersFailed());
-            });
+        fetchUsers(dispatch, appStore.getState)
     }, [dispatch, appStore]);
 
     const sortedUsers = useAppSelector((state) =>
