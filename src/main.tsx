@@ -7,14 +7,12 @@ import { fetchUsers } from "./modules/users/model/fetch-users.ts";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router.tsx";
 
-store.dispatch(fetchUsers())
+store.dispatch(fetchUsers({}));
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <Provider store={store}>
-            <RouterProvider router={router}>
-
-            </RouterProvider>
+            <RouterProvider router={router}></RouterProvider>
         </Provider>
     </StrictMode>,
 );
