@@ -1,25 +1,22 @@
-import { api } from "../../../shared/api";
-import type { AppDispatch, AppState, store } from "../../../store";
+import type { AppThunk } from "../../../store";
 import { usersSlice } from "../users.slice";
 
-type AppStore = typeof store
+export const fetchUsers =
+    (): AppThunk =>
+    (dispatch, getState, { api }) => {
+        const isIdle = usersSlice.selectors.selectIsFetchUsersIdle(getState());
 
-export const fetchUsers = (dispatch: AppDispatch, appState: () => AppState) => {
-    const isIdle = usersSlice.selectors.selectIfFetchUsersIdle(
-        appState(),
-    );
+        if (!isIdle) {
+            return;
+        }
 
-    if (!isIdle) {
-        return;
-    }
+        dispatch(usersSlice.actions.fetchUsersPending());
 
-    dispatch(usersSlice.actions.fetchUsersPending());
-
-    api.getUsers()
-        .then((users) => {
-            dispatch(usersSlice.actions.fetchUsersSuccess({ users }));
-        })
-        .catch((err) => {
-            dispatch(usersSlice.actions.fetchUsersFailed());
-        });
-};
+        api.getUsers()
+            .then((users) => {
+                dispatch(usersSlice.actions.fetchUsersSuccess({ users }));
+            })
+            .catch((err) => {
+                dispatch(usersSlice.actions.fetchUsersFailed());
+            });
+    };
