@@ -3,6 +3,7 @@ import {
     createSlice,
     type PayloadAction,
 } from "@reduxjs/toolkit";
+import { fetchUsers } from "./model/fetch-users";
 
 export type UserId = string;
 
@@ -117,5 +118,25 @@ export const usersSlice = createSlice({
         deleteUserFailed: (state) => {
             state.deleteUserStatus = "failed";
         },
+    },
+    extraReducers(builder) {
+        builder.addCase(fetchUsers.pending, (state) => {
+            state.fetchUsersStatus = 'pending'
+        })
+        builder.addCase(fetchUsers.fulfilled, (state, action) => {
+            state.fetchUsersStatus = 'success'
+            const users = action.payload;
+
+            state.entities = users.reduce((acc, user) => {
+                acc[user.id] = user;
+                return acc;
+            }, {} as Record<UserId, User>)
+            state.ids = users.map((user) => user.id);
+
+
+        })
+        builder.addCase(fetchUsers.rejected, (state, action) => {
+            state.fetchUsersStatus = 'failed'
+        })
     },
 });
