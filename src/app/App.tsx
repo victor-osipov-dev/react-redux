@@ -1,6 +1,5 @@
-import "./App.css";
-import { Counters } from "./modules/counters/counters";
-import { UsersList } from "./modules/users/users-list";
+import { Counters } from "../modules/counters/counters";
+import { UsersList } from "../modules/users/users-list";
 
 function App() {
     return (

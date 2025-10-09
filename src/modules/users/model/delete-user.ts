@@ -1,4 +1,4 @@
-import type { AppThunk } from "../../../store";
+import type { AppThunk } from "../../../shared/redux";
 import { usersSlice, type UserId } from "../users.slice";
 import { fetchUsers } from "./fetch-users";
 

@@ -1,5 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import type { AppCountersState } from "../../store";
+import type { AppCountersState } from "../../shared/redux";
 
 type CounterState = {
     counter: number;
