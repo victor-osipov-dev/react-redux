@@ -3,9 +3,9 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { Provider } from "react-redux";
 import { store } from "./store.ts";
+import { router } from "./router.tsx";
 import { fetchUsers } from "./modules/users/model/fetch-users.ts";
 import { RouterProvider } from "react-router-dom";
-import { router } from "./router.tsx";
 
 store.dispatch(fetchUsers({}));
 

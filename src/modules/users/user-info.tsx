@@ -1,8 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { usersSlice, type UserId } from "./users.slice";
-import { useEffect } from "react";
-import { fetchUser } from "./model/fetch-user";
 import { deleteUser } from "./model/delete-user";
 
 export function UserInfo() {
@@ -18,10 +16,6 @@ export function UserInfo() {
     const user = useAppSelector((state) =>
         usersSlice.selectors.selectUserById(state, id),
     );
-
-    useEffect(() => {
-        dispatch(fetchUser(id));
-    }, [dispatch, id]);
 
     const handleBackButtonClick = () => {
         navigate("..", { relative: "path" });

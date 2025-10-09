@@ -1,8 +1,6 @@
-import { memo, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector, useAppStore } from "../../store";
+import { memo, useState } from "react";
+import { useAppSelector } from "../../store";
 import { usersSlice } from "./users.slice";
-import { fetchUsers } from "./model/fetch-users";
-import { UserInfo } from "./user-info";
 import { useNavigate } from "react-router-dom";
 
 type UserId = string;
@@ -13,17 +11,11 @@ type User = {
 };
 
 export function UsersList() {
-    const dispatch = useAppDispatch();
-    const appStore = useAppStore();
     const [sortType, setSortType] = useState<"asc" | "desc">("asc");
 
     const isPending = useAppSelector(
         usersSlice.selectors.selectIsFetchUsersPending,
     );
-
-    useEffect(() => {
-        dispatch(fetchUsers({}));
-    }, [dispatch, appStore]);
 
     const sortedUsers = useAppSelector((state) =>
         usersSlice.selectors.selectSortedUsers(state, sortType),

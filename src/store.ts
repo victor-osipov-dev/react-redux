@@ -8,9 +8,8 @@ import {
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { usersSlice } from "./modules/users/users.slice";
 import { countersReducer } from "./modules/counters/counters.slice";
-import { api } from "./shared/api";
-import { router } from "./router";
 import { extraArgument } from "./extra-argument";
+import { resolveStoreReady } from "./router";
 
 export const store = configureStore({
     reducer: {
@@ -20,6 +19,8 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ thunk: { extraArgument } }),
 });
+
+resolveStoreReady(true);
 
 export type AppState = ReturnType<typeof store.getState>;
 export type AppCountersState = Pick<AppState, "counters">;
