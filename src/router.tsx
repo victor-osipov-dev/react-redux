@@ -6,10 +6,8 @@ import { store } from "./store";
 import { fetchUsers } from "./modules/users/model/fetch-users";
 import { fetchUser } from "./modules/users/model/fetch-user";
 
-export let resolveStoreReady: (value: unknown) => void;
-const storeReady = new Promise((resolve) => {
-    resolveStoreReady = resolve;
-});
+export const { promise: storeReady, resolve: resolveStoreReady } =
+    Promise.withResolvers();
 
 export const router = createBrowserRouter([
     {
