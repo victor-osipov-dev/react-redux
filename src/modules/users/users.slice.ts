@@ -1,9 +1,6 @@
-import {
-    createSelector,
-    createSlice,
-    type PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 import { fetchUsers } from "./model/fetch-users";
+import { createSlice, type ExtraArgument } from "../../shared/redux";
 
 export type UserId = string;
 
@@ -67,36 +64,46 @@ export const usersSlice = createSlice({
         selectIsDeleteUserPending: (state) =>
             state.deleteUserStatus === "pending",
     },
-    reducers: {
-        fetchUserPending: (state) => {
-            state.fetchUserStatus = "pending";
-        },
-        fetchUserSuccess: (state, action: PayloadAction<{ user: User }>) => {
-            const { user } = action.payload;
-
-            state.fetchUserStatus = "success";
-            state.entities[user.id] = user;
-        },
-        fetchUserFailed: (state) => {
-            state.fetchUserStatus = "failed";
-        },
-
-        deleteUserPending: (state) => {
+    reducers: (creator) => ({
+        fetchUser: creator.asyncThunk<
+            User,
+            { userId: UserId },
+            { extra: ExtraArgument }
+        >(
+            (params, thunkAPI) => {
+                return thunkAPI.extra.api.getUser(params.userId);
+            },
+            {
+                pending: (state) => {
+                    state.fetchUserStatus = "pending";
+                },
+                fulfilled: (state, action) => {
+                    const user = action.payload;
+                    state.fetchUserStatus = "success";
+                    state.entities[user.id] = user;
+                },
+                rejected: (state) => {
+                    state.fetchUserStatus = "failed";
+                },
+            },
+        ),
+        deleteUserPending: creator.reducer((state) => {
             state.deleteUserStatus = "pending";
-        },
-        deleteUserSuccess: (
-            state,
-            action: PayloadAction<{ userId: UserId }>,
-        ) => {
-            state.deleteUserStatus = "success";
+        }),
+        deleteUserSuccess: creator.reducer(
+            (state, action: PayloadAction<{ userId: UserId }>) => {
+                state.deleteUserStatus = "success";
 
-            delete state.entities[action.payload.userId];
-            state.ids = state.ids.filter((id) => id !== action.payload.userId);
-        },
-        deleteUserFailed: (state) => {
+                delete state.entities[action.payload.userId];
+                state.ids = state.ids.filter(
+                    (id) => id !== action.payload.userId,
+                );
+            },
+        ),
+        deleteUserFailed: creator.reducer((state) => {
             state.deleteUserStatus = "failed";
-        },
-    },
+        }),
+    }),
     extraReducers(builder) {
         builder.addCase(fetchUsers.pending, (state) => {
             state.fetchUsersStatus = "pending";

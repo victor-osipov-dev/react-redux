@@ -1,4 +1,6 @@
 import {
+    asyncThunkCreator,
+    buildCreateSlice,
     createAsyncThunk,
     createSelector,
     type ThunkAction,
@@ -27,3 +29,9 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
     dispatch: AppDispatch;
     extra: typeof extraArgument;
 }>();
+
+export type ExtraArgument = typeof extraArgument;
+
+export const createSlice = buildCreateSlice({
+    creators: { asyncThunk: asyncThunkCreator },
+});
