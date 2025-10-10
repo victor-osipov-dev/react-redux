@@ -26,4 +26,4 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
     state: AppState;
     dispatch: AppDispatch;
     extra: typeof extraArgument;
-}>()
+}>();

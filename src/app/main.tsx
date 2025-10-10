@@ -6,7 +6,7 @@ import { router } from "./router.tsx";
 import { fetchUsers } from "../modules/users/model/fetch-users.ts";
 import { RouterProvider } from "react-router-dom";
 
-store.dispatch(fetchUsers({}));
+store.dispatch(fetchUsers());
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>

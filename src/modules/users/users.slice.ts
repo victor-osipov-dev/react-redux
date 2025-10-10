@@ -68,28 +68,6 @@ export const usersSlice = createSlice({
             state.deleteUserStatus === "pending",
     },
     reducers: {
-        fetchUsersPending: (state) => {
-            state.fetchUsersStatus = "pending";
-        },
-        fetchUsersSuccess: (
-            state,
-            action: PayloadAction<{ users: User[] }>,
-        ) => {
-            const { users } = action.payload;
-
-            state.fetchUsersStatus = "success";
-            state.entities = users.reduce(
-                (acc, user) => {
-                    acc[user.id] = user;
-                    return acc;
-                },
-                {} as Record<UserId, User>,
-            );
-            state.ids = users.map((user) => user.id);
-        },
-        fetchUsersFailed: (state) => {
-            state.fetchUsersStatus = "failed";
-        },
         fetchUserPending: (state) => {
             state.fetchUserStatus = "pending";
         },
@@ -121,22 +99,23 @@ export const usersSlice = createSlice({
     },
     extraReducers(builder) {
         builder.addCase(fetchUsers.pending, (state) => {
-            state.fetchUsersStatus = 'pending'
-        })
+            state.fetchUsersStatus = "pending";
+        });
         builder.addCase(fetchUsers.fulfilled, (state, action) => {
-            state.fetchUsersStatus = 'success'
+            state.fetchUsersStatus = "success";
             const users = action.payload;
 
-            state.entities = users.reduce((acc, user) => {
-                acc[user.id] = user;
-                return acc;
-            }, {} as Record<UserId, User>)
+            state.entities = users.reduce(
+                (acc, user) => {
+                    acc[user.id] = user;
+                    return acc;
+                },
+                {} as Record<UserId, User>,
+            );
             state.ids = users.map((user) => user.id);
-
-
-        })
+        });
         builder.addCase(fetchUsers.rejected, (state, action) => {
-            state.fetchUsersStatus = 'failed'
-        })
+            state.fetchUsersStatus = "failed";
+        });
     },
 });
