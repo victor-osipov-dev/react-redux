@@ -1,33 +1,31 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { usersSlice, type UserId } from "./users.slice";
-import { deleteUser } from "./model/delete-user";
-import { useAppDispatch, useAppSelector } from "../../shared/redux";
+import { type UserId } from "./users.slice";
+import { useAppDispatch } from "../../shared/redux";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { usersApi } from "./api";
 
 export function UserInfo() {
-    const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { id = "" } = useParams<{ id: UserId }>();
-    const isPending = useAppSelector(
-        usersSlice.selectors.selectIsFetchUserPending,
+    const { id } = useParams<{ id: UserId }>();
+
+    const { data: user, isLoading: isLoadingUser } = usersApi.useGetUserQuery(
+        id ?? skipToken,
     );
-    const isDeletePending = useAppSelector(
-        usersSlice.selectors.selectIsDeleteUserPending,
-    );
-    const user = useAppSelector((state) =>
-        usersSlice.selectors.selectUserById(state, id),
-    );
+
+    const [deleteUser, { isLoading: isLoadingDelete }] =
+        usersApi.useDeleteUserMutation();
 
     const handleBackButtonClick = () => {
         navigate("..", { relative: "path" });
     };
 
     const handleDeleteButtonClick = () => {
-        dispatch(deleteUser(id)).then(() =>
-            navigate("..", { relative: "path" }),
-        );
+        if (id) {
+            deleteUser(id).then(() => navigate("..", { relative: "path" }));
+        }
     };
 
-    if (isPending || !user) {
+    if (isLoadingUser || !user) {
         return <div>Loading...</div>;
     }
 
@@ -44,7 +42,7 @@ export function UserInfo() {
             <button
                 onClick={handleDeleteButtonClick}
                 className="bg-red-500 over:bg-red-700 text-white font-bold py-1 px-2 rounded mt-4"
-                disabled={isDeletePending}
+                disabled={isLoadingDelete}
             >
                 Delete
             </button>

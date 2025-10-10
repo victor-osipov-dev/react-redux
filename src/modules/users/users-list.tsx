@@ -1,27 +1,24 @@
-import { memo, useState } from "react";
-import { usersSlice } from "./users.slice";
+import { memo, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../shared/redux";
-
-type UserId = string;
-type User = {
-    id: UserId;
-    name: string;
-    description: string;
-};
+import { usersApi } from "./api";
+import type { User } from "./users.slice";
 
 export function UsersList() {
     const [sortType, setSortType] = useState<"asc" | "desc">("asc");
 
-    const isPending = useAppSelector(
-        usersSlice.selectors.selectIsFetchUsersPending,
-    );
+    const { data: users, isLoading } = usersApi.useGetUsersQuery();
 
-    const sortedUsers = useAppSelector((state) =>
-        usersSlice.selectors.selectSortedUsers(state, sortType),
-    );
+    const sortedUsers = useMemo(() => {
+        return (users ?? []).toSorted((a, b) => {
+            if (sortType === "asc") {
+                return a.name.localeCompare(b.name);
+            } else {
+                return b.name.localeCompare(a.name);
+            }
+        });
+    }, [users, sortType]);
 
-    if (isPending) {
+    if (isLoading) {
         return <div>Loading...</div>;
     }
 
@@ -44,7 +41,7 @@ export function UsersList() {
                 </div>
                 <ul className="list-none">
                     {sortedUsers.map((user: User) => (
-                        <UserListItem userId={user.id} key={user.id} />
+                        <UserListItem user={user} key={user.id} />
                     ))}
                 </ul>
             </div>
@@ -52,12 +49,11 @@ export function UsersList() {
     );
 }
 
-const UserListItem = memo(({ userId }: { userId: UserId }) => {
+const UserListItem = memo(({ user }: { user: User }) => {
     const navigate = useNavigate();
-    const user = useAppSelector((state) => state.users.entities[userId]);
 
     const handleUserClick = () => {
-        navigate(userId, { relative: "path" });
+        navigate(user.id, { relative: "path" });
     };
 
     if (!user) {

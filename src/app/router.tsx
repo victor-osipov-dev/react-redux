@@ -2,9 +2,6 @@ import { createBrowserRouter, Link, Outlet, redirect } from "react-router-dom";
 import { UsersList } from "../modules/users/users-list";
 import { Counters } from "../modules/counters/counters";
 import { UserInfo } from "../modules/users/user-info";
-import { store } from "./store";
-import { fetchUsers } from "../modules/users/model/fetch-users";
-import { fetchUser } from "../modules/users/model/fetch-user";
 
 export const { promise: storeReady, resolve: resolveStoreReady } =
     Promise.withResolvers();
@@ -32,9 +29,6 @@ export const router = createBrowserRouter([
                 element: <UsersList />,
                 loader: async () => {
                     await storeReady;
-
-                    store.dispatch(fetchUsers());
-                    return null;
                 },
             },
             {
@@ -42,8 +36,6 @@ export const router = createBrowserRouter([
                 element: <UserInfo />,
                 loader: async ({ params }) => {
                     await storeReady;
-
-                    store.dispatch(fetchUser(params.id ?? ""));
                 },
             },
             {

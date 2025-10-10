@@ -4,7 +4,7 @@ import { createSlice, type ExtraArgument } from "../../shared/redux";
 
 export type UserId = string;
 
-type User = {
+export type User = {
     id: UserId;
     name: string;
     description: string;
