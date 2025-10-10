@@ -1,10 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { type UserId } from "./users.slice";
-import { useAppDispatch } from "../../shared/redux";
+import { useAppDispatch, useAppSelector } from "../../shared/redux";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { usersApi } from "./api";
+import { deleteUser } from "./model/delete-user";
 
 export function UserInfo() {
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { id } = useParams<{ id: UserId }>();
 
@@ -12,17 +14,26 @@ export function UserInfo() {
         id ?? skipToken,
     );
 
-    const [deleteUser, { isLoading: isLoadingDelete }] =
-        usersApi.useDeleteUserMutation();
+    const isLoadingDelete = useAppSelector(
+        (state) =>
+            usersApi.endpoints.deleteUser.select(id ?? skipToken)(state)
+                .isLoading,
+    );
+
+    // const [deleteUser, { isLoading: isLoadingDelete }] =
+    //     usersApi.useDeleteUserMutation();
 
     const handleBackButtonClick = () => {
         navigate("..", { relative: "path" });
     };
 
-    const handleDeleteButtonClick = () => {
-        if (id) {
-            deleteUser(id).then(() => navigate("..", { relative: "path" }));
+    const handleDeleteButtonClick = async () => {
+        if (!id) {
+            return;
         }
+
+        await dispatch(deleteUser(id));
+        navigate("..", { relative: "path" });
     };
 
     if (isLoadingUser || !user) {
