@@ -1,6 +1,6 @@
 import type { AppThunk } from "../../../shared/redux";
 import { usersApi } from "../api";
-import { type UserId } from "../users.slice";
+import { type UserId } from "./domain";
 
 export const deleteUser =
     (userId: UserId): AppThunk<Promise<void>> =>

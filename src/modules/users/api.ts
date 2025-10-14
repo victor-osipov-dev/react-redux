@@ -1,6 +1,6 @@
 import z from "zod";
 import { baseApi } from "../../shared/api";
-import type { User, UserId } from "./users.slice";
+import type { User, UserId } from "./model/domain";
 
 const UserDtoSchema = z.object({
     id: z.string(),
