@@ -1,20 +1,16 @@
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import type { User } from "./model/domain";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../shared/redux";
 import { usersListSlice } from "./model/users-list.slice";
-import { usersSlice } from "./model/users.slice";
-import { selectCountersSum } from "./model/select-counters";
 import { selectSortedUsers } from "./model/select-sorted-users";
 import { deleteCountersUsers } from "./model/delete-counters-users";
+import { selectCountersSum } from "../counters";
 
 export function UsersList() {
     const dispatch = useAppDispatch();
 
-    const users = useAppSelector(usersSlice.selectors.usersList);
-    const sortType = useAppSelector(usersListSlice.selectors.sortType);
     const countersSum = useAppSelector(selectCountersSum);
-
     const sortedUsers = useAppSelector(selectSortedUsers);
 
     return (

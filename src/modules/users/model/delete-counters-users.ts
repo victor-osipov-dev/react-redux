@@ -1,6 +1,5 @@
 import type { AppThunk } from "../../../shared/redux";
-import { countersSlice } from "../../counters/counters.slice";
-import { selectCountersSum } from "./select-counters";
+import { resetCountersAction, selectCountersSum } from "../../counters";
 import { selectSortedUsers } from "./select-sorted-users";
 import { usersSlice } from "./users.slice";
 
@@ -17,5 +16,5 @@ export const deleteCountersUsers =
             }),
         );
 
-        dispatch(countersSlice.actions.resetCounters());
+        dispatch(resetCountersAction());
     };

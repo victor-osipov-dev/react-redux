@@ -1,9 +1,7 @@
 import { createBrowserRouter, Link, Outlet, redirect } from "react-router-dom";
-import { UsersList } from "../modules/users/users-list";
-import { Counters } from "../modules/counters/counters";
-import { UserInfo } from "../modules/users/user-info";
-import { usersApi } from "../modules/users/api";
 import { store } from "./store";
+import { UserInfo, usersApi, UsersList } from "../modules/users";
+import { Counters } from "../modules/counters";
 
 export const { promise: storeReady, resolve: resolveStoreReady } =
     Promise.withResolvers();

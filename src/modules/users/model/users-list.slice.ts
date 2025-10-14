@@ -1,4 +1,5 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { rootReucer } from "../../../shared/redux";
 
 export type SortType = "asc" | "desc";
 type State = {
@@ -20,4 +21,4 @@ export const usersListSlice = createSlice({
             state.sortType = action.payload;
         },
     },
-});
+}).injectInto(rootReucer);

@@ -4,6 +4,7 @@ import {
     type PayloadAction,
 } from "@reduxjs/toolkit";
 import type { User, UserId } from "./domain";
+import { rootReucer } from "../../../shared/redux";
 
 type State = {
     entities: Record<UserId, User | undefined>;
@@ -66,4 +67,4 @@ export const usersSlice = createSlice({
             state.ids = users.map((user) => user.id);
         },
     },
-});
+}).injectInto(rootReucer);
