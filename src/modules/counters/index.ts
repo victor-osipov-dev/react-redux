@@ -1,5 +1,2 @@
 export { Counters } from "./counters";
-export {
-    selectCountersSum,
-    resetCountersAction,
-} from "./counters.slice";
+export { selectCountersSum, resetCountersAction } from "./counters.slice";

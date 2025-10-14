@@ -54,8 +54,8 @@ export const usersSlice = createSlice({
 
             state.ids = state.ids.filter((id) => !userIds.includes(id));
         },
-        stored: (state, action: PayloadAction<{ users: User[] }>) => {
-            const { users } = action.payload;
+        stored: (state) => {
+            const users = initialUsers;
 
             state.entities = users.reduce(
                 (acc, user) => {
@@ -68,3 +68,5 @@ export const usersSlice = createSlice({
         },
     },
 }).injectInto(rootReucer);
+
+export const storeInitialUsersAction = usersSlice.actions.stored;
