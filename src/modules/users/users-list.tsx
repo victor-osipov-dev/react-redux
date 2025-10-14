@@ -4,22 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../shared/redux";
 import { usersListSlice } from "./model/users-list.slice";
 import { usersSlice } from "./model/users.slice";
+import { selectCountersSum } from "./model/select-counters";
+import { selectSortedUsers } from "./model/select-sorted-users";
+import { deleteCountersUsers } from "./model/delete-counters-users";
 
 export function UsersList() {
     const dispatch = useAppDispatch();
 
     const users = useAppSelector(usersSlice.selectors.usersList);
     const sortType = useAppSelector(usersListSlice.selectors.sortType);
+    const countersSum = useAppSelector(selectCountersSum);
 
-    const sortedUsers = useMemo(() => {
-        return [...(users ?? [])].sort((a, b) => {
-            if (sortType === "asc") {
-                return a.name.localeCompare(b.name);
-            } else {
-                return b.name.localeCompare(a.name);
-            }
-        });
-    }, [users, sortType]);
+    const sortedUsers = useAppSelector(selectSortedUsers);
 
     return (
         <div className="flex flex-col items-center">
@@ -41,9 +37,14 @@ export function UsersList() {
                     >
                         Desc
                     </button>
-                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                        Delete counter users
-                    </button>
+                    {countersSum !== 0 && (
+                        <button
+                            onClick={() => dispatch(deleteCountersUsers())}
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                            Delete counter users {countersSum}
+                        </button>
+                    )}
                 </div>
                 <ul className="list-none">
                     {sortedUsers.map((user) => (

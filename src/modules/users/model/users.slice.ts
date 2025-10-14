@@ -44,6 +44,15 @@ export const usersSlice = createSlice({
             delete state.entities[userId];
             state.ids = state.ids.filter((id) => id !== userId);
         },
+        deleteUsers: (state, action: PayloadAction<{ userIds: UserId[] }>) => {
+            const { userIds } = action.payload;
+
+            userIds.forEach((userId) => {
+                delete state.entities[userId];
+            });
+
+            state.ids = state.ids.filter((id) => !userIds.includes(id));
+        },
         stored: (state, action: PayloadAction<{ users: User[] }>) => {
             const { users } = action.payload;
 
