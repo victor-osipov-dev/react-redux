@@ -1,7 +1,8 @@
 import { createBrowserRouter, Link, Outlet, redirect } from "react-router-dom";
 import { store } from "./store";
 import { Counters } from "../modules/counters";
-import { UserInfo } from "../modules/users";
+import { queryClient } from "../shared/api";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 export const { promise: storeReady, resolve: resolveStoreReady } =
     Promise.withResolvers();
@@ -10,14 +11,15 @@ export const router = createBrowserRouter([
     {
         path: "/",
         element: (
-            <div className="container p-5 flex flex-col gap-5">
-                <header className="py-5 flex gap-4">
-                    <Link to="users">Users</Link>
-                    <Link to="conters">Counters</Link>
-                </header>
-
-                <Outlet></Outlet>
-            </div>
+            <QueryClientProvider client={queryClient}>
+                <div className="container p-5 flex flex-col gap-5">
+                    <header className="py-5 flex gap-4">
+                        <Link to="users">Users</Link>
+                        <Link to="counters">Counters</Link>
+                    </header>
+                    <Outlet />
+                </div>
+            </QueryClientProvider>
         ),
         children: [
             {
@@ -32,7 +34,7 @@ export const router = createBrowserRouter([
                         loader: async () => {
                             await storeReady;
 
-                            store.dispatch(m.storeInitialUsersAction());
+                            // store.dispatch(m.storeInitialUsersAction());
 
                             return null;
                         },
@@ -46,7 +48,7 @@ export const router = createBrowserRouter([
                         loader: async () => {
                             await storeReady;
 
-                            store.dispatch(m.storeInitialUsersAction());
+                            // store.dispatch(m.storeInitialUsersAction());
                             return null;
                         },
                     })),

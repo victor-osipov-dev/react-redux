@@ -9,11 +9,8 @@ import {
 } from "@reduxjs/toolkit";
 import type { extraArgument, store } from "../app/store";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import { baseApi } from "./api";
 
-export const rootReucer = combineSlices(baseApi);
-
-// rootReucer.inject()
+export const rootReducer = combineSlices();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AppState = any;

@@ -1,29 +1,29 @@
-import z from "zod";
-import { baseApi } from "../../shared/api";
-import type { User, UserId } from "./model/domain";
+import { baseFetch } from "../../shared/api";
+import type { UserId } from "./model/domain";
+import { z } from "zod";
+import { queryOptions } from "@tanstack/react-query";
 
 const UserDtoSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    description: z.string(),
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
 });
 
-export const usersApi = baseApi.injectEndpoints({
-    endpoints: (create) => ({
-        getUsers: create.query<User[], void>({
-            query: () => "/users",
-            providesTags: ["Users", { type: "Users", id: "LIST" }],
-            transformResponse: (res: unknown) =>
-                UserDtoSchema.array().parse(res),
-        }),
-        getUser: create.query<User, UserId>({
-            query: (userId) => "/users/" + userId,
-            providesTags: ["Users"],
-            transformResponse: (res: unknown) => UserDtoSchema.parse(res),
-        }),
-        deleteUser: create.mutation<void, UserId>({
-            query: (userId) => ({ method: "DELETE", url: `/users/${userId}` }),
-        }),
-    }),
-    overrideExisting: true,
-});
+export const getUsersQueryOptions = () => {
+  return queryOptions({
+    queryKey: ["user", "list"],
+    queryFn: () =>
+      baseFetch("users").then((res) => UserDtoSchema.array().parse(res)),
+  });
+};
+
+export const getUserQueryOptions = (userId: UserId) => {
+  return queryOptions({
+    queryKey: ["user", userId],
+    queryFn: () =>
+      baseFetch(`users/${userId}`).then((res) => UserDtoSchema.parse(res)),
+  });
+};
+
+export const deleteUser = (userId: UserId) =>
+  baseFetch(`users/${userId}`, { method: "DELETE" });

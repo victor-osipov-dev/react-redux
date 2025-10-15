@@ -1,5 +1,5 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { rootReucer } from "../../shared/redux";
+import { rootReducer } from "../../shared/redux";
 
 type CounterState = {
     counter: number;
@@ -50,7 +50,7 @@ export const countersSlice = createSlice({
         },
         resetCounters: () => initialCountresState,
     },
-}).injectInto(rootReucer);
+}).injectInto(rootReducer);
 
 export const selectCountersSum = countersSlice.selectors.countersSum;
 export const resetCountersAction = countersSlice.actions.resetCounters;

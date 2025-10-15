@@ -4,21 +4,12 @@ import {
     type PayloadAction,
 } from "@reduxjs/toolkit";
 import type { User, UserId } from "./domain";
-import { rootReucer } from "../../../shared/redux";
+import { rootReducer } from "../../../shared/redux";
 
 type State = {
     entities: Record<UserId, User | undefined>;
     ids: UserId[];
 };
-
-export const initialUsers: User[] = Array.from(
-    { length: 1000 },
-    (_, index) => ({
-        id: `user${index + 11}`,
-        name: `User ${index + 11}`,
-        description: `Description for User ${index + 11}`,
-    }),
-);
 
 const initialUsersState: State = {
     entities: {},
@@ -54,8 +45,8 @@ export const usersSlice = createSlice({
 
             state.ids = state.ids.filter((id) => !userIds.includes(id));
         },
-        stored: (state) => {
-            const users = initialUsers;
+        stored: (state, action: PayloadAction<{ users: User[] }>) => {
+            const { users } = action.payload;
 
             state.entities = users.reduce(
                 (acc, user) => {
@@ -67,6 +58,6 @@ export const usersSlice = createSlice({
             state.ids = users.map((user) => user.id);
         },
     },
-}).injectInto(rootReucer);
+}).injectInto(rootReducer);
 
 export const storeInitialUsersAction = usersSlice.actions.stored;
