@@ -1,14 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { router } from "./router";
+import { resolveStoreReady, router } from "./router";
 import { rootReducer } from "../shared/redux";
 
 export const extraArgument = {
-  router,
+    router,
 };
 
 export const store = configureStore({
-  reducer: rootReducer,
+    reducer: rootReducer,
 
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: { extraArgument } }),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({ thunk: { extraArgument } }),
 });
+
+resolveStoreReady(true);

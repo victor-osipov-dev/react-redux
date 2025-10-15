@@ -33,10 +33,6 @@ export const router = createBrowserRouter([
                         Component: m.UsersList,
                         loader: async () => {
                             await storeReady;
-
-                            // store.dispatch(m.storeInitialUsersAction());
-
-                            return null;
                         },
                     })),
             },
@@ -47,14 +43,11 @@ export const router = createBrowserRouter([
                         Component: m.UserInfo,
                         loader: async () => {
                             await storeReady;
-
-                            // store.dispatch(m.storeInitialUsersAction());
-                            return null;
                         },
                     })),
             },
             {
-                path: "conters",
+                path: "counters",
                 element: <Counters />,
             },
         ],

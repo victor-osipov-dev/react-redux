@@ -1,14 +1,14 @@
+import { queryClient } from "../../../shared/api";
 import type { AppThunk } from "../../../shared/redux";
+import { deleteUser, usersBaseKey } from "../api";
 import { type UserId } from "./domain";
 
-export const deleteUser =
+export const deleteUserThunk =
     (userId: UserId): AppThunk<Promise<void>> =>
     async (dispatch, _, { router }) => {
-        // await dispatch(usersApi.endpoints.deleteUser.initiate(userId)).unwrap();
-        
+        await deleteUser(userId);
         await router.navigate("/users");
-
-        // await dispatch(
-        //     usersApi.util.invalidateTags([{ type: "Users", id: "LIST" }]),
-        // );
+        await queryClient.invalidateQueries({
+            queryKey: usersBaseKey,
+        });
     };

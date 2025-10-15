@@ -1,24 +1,19 @@
 {
-    "users": [
-        {
-            "id": "user1",
-            "name": "John",
-            "description": "user1 description"
-        },
-        {
-            "id": "user2",
-            "name": "Anna",
-            "description": "user2 description"
-        },
-        {
-            "id": "user3",
-            "name": "Jane",
-            "description": "user3 description"
-        },
-        {
-            "id": "user4",
-            "name": "Dima",
-            "description": "user4 description"
-        }
-    ]
+  "users": [
+    {
+      "id": "user1",
+      "name": "John",
+      "description": "user1 description"
+    },
+    {
+      "id": "user2",
+      "name": "Anna",
+      "description": "user2 description"
+    },
+    {
+      "id": "user3",
+      "name": "Jane",
+      "description": "user3 description"
+    }
+  ]
 }
